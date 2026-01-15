@@ -8,7 +8,7 @@ services:
     volumes:
       - ./odoo/addons:/mnt/extra-addons
       - ./odoo/config:/etc/odoo
-      - odoo-db-data:/var/lib/odoo
+      - odoo-web-data:/var/lib/odoo
     depends_on:
       - db_odoo
     environment:
@@ -22,6 +22,8 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=odoo_pass
       - POSTGRES_USER=odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
 
   # CRM: SuiteCRM v8
   suitecrm:
@@ -52,17 +54,45 @@ services:
     volumes:
       - suitecrm-db-data:/var/lib/mysql
 
-  # BPM: Bonita Runtime 2023.2
+  # BPM: Bonita Runtime 2023.2 con PostgreSQL
   bonita:
     image: bonita:2023.2
     container_name: sie_bonita
     ports:
       - "8081:8080"
     environment:
-      - PLATFORM_LOGIN=admin
-      - PLATFORM_PASSWORD=password
+      - DB_VENDOR=postgres
+      - DB_HOST=db_bonita
+      - DB_PORT=5432
+      - DB_NAME=bonita
+      - DB_USER=bonita
+      - DB_PASS=bpm
+      - BIZ_DB_NAME=business_data
+      - BIZ_DB_USER=business_data
+      - BIZ_DB_PASS=bpm
+    restart: on-failure:2
+    depends_on:
+      db_bonita:
+        # It uses the HEALTHCHECK of the database Docker image
+        condition: service_healthy
     volumes:
       - bonita-data:/opt/bonita
+
+  db_bonita:
+    image: bonitasoft/bonita-postgres:15.4
+    environment:
+      POSTGRES_PASSWORD: my-secret-pw
+    restart: always
+    # Uncomment those lines to mount a volume with your dumps
+    #volumes:
+    #  - ~/my/test/dumps:/opt/bonita/dump
+    
+    #environment:
+    #  - POSTGRES_DB=bonita
+    #  - POSTGRES_USER=bonita
+    #  - POSTGRES_PASSWORD=bonita
+    volumes:
+      - bonita-db-data:/var/lib/postgresql/data
 
   # Automatización: n8n
   n8n:
@@ -84,10 +114,25 @@ services:
       - smtp4dev-data:/smtp4dev
     restart: always
 
+  # Gestión BD: pgAdmin 4
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: sie_pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@sie.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
 volumes:
+  odoo-web-data:
   odoo-db-data:
   suitecrm-data:
   suitecrm-db-data:
   bonita-data:
+  bonita-db-data:
   n8n-data:
   smtp4dev-data:
+  pgadmin-data:
