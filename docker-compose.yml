@@ -1,0 +1,89 @@
+services:
+  # ERP: Odoo v17
+  odoo:
+    image: odoo:17.0
+    container_name: sie_odoo
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./odoo/addons:/mnt/extra-addons
+      - ./odoo/config:/etc/odoo
+      - odoo-db-data:/var/lib/odoo
+    depends_on:
+      - db_odoo
+    environment:
+      - HOST=db_odoo
+      - USER=odoo
+      - PASSWORD=odoo_pass
+
+  db_odoo:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo_pass
+      - POSTGRES_USER=odoo
+
+  # CRM: SuiteCRM v8
+  suitecrm:
+    build:
+      context: ./suitecrm
+      dockerfile: Dockerfile
+    container_name: sie_suitecrm
+    ports:
+      - "8080:80"
+    volumes:
+      - ./suitecrm/upload:/var/www/html/public/legacy/upload
+      - suitecrm-data:/var/www/html
+    depends_on:
+      - db_suitecrm
+    environment:
+      - DATABASE_HOST=db_suitecrm
+      - DATABASE_NAME=suitecrm_db
+      - DATABASE_USER=suitecrm_user
+      - DATABASE_PASSWORD=suitecrm_pass
+
+  db_suitecrm:
+    image: mariadb:10.11
+    environment:
+      - MARIADB_DATABASE=suitecrm_db
+      - MARIADB_USER=suitecrm_user
+      - MARIADB_PASSWORD=suitecrm_pass
+      - MARIADB_ROOT_PASSWORD=root_pass
+    volumes:
+      - suitecrm-db-data:/var/lib/mysql
+
+  # BPM: Bonita Runtime 2023.2
+  bonita:
+    image: bonita:2023.2
+    container_name: sie_bonita
+    ports:
+      - "8081:8080"
+    environment:
+      - PLATFORM_LOGIN=admin
+      - PLATFORM_PASSWORD=password
+    volumes:
+      - bonita-data:/opt/bonita
+
+  # Automatización: n8n
+  n8n:
+    image: n8nio/n8n:1
+    container_name: sie_n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n/data:/home/node/.n8n
+
+  # Email Fake Server: smtp4dev
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    container_name: sie_smtp4dev
+    ports:
+      - "3000:80"     # Panel Web para ver correos
+      - "2525:25"     # Puerto SMTP para herramientas externas (Bonita Studio)
+    restart: always
+
+volumes:
+  odoo-db-data:
+  suitecrm-data:
+  suitecrm-db-data:
+  bonita-data:
