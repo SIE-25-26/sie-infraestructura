@@ -1,6 +1,18 @@
 # Infraestructura SIE
 
-Este repositorio contiene la configuración necesaria para levantar el ecosistema de Sistemas de Información Empresariales mediante Docker.
+Este repositorio contiene la configuración necesaria para levantar el ecosistema de la asignatura **Sistemas de Información Empresariales** (SIE). Configuraremos un entorno profesional utilizando GitHub y Docker, lo que nos permitirá realizar las actividades planificadas con diferentes herramientas de gestión empresarial, usando todos la misma infraestructura, minimizando los problemas técnicos y facilitando la limpieza del equipo una vez finalizado el trabajo.
+
+Las herramientas con las que vamos a trabajar son:
+
+| Herramienta | Categoría | Función Principal |
+|------------|-----------|-------------------|
+| Docker | Virtualización y Contenedores | Plataforma que permite ejecutar y aislar las aplicaciones para que funcionen igual en cualquier PC. |
+| Odoo | ERP (Enterprise Resource Planning) | Gestión integral: ventas, inventario, contabilidad y RRHH. |
+| SuiteCRM | CRM (Customer Relationship Management) | Gestión del ciclo de vida del cliente y marketing. |
+| Bonita | BPM (Business Process Management) | Automatización y ejecución de procesos de negocio complejos. |
+| n8n | iPaaS (Integration Platform as a Service) | Conecta diferentes aplicaciones mediante flujos de trabajo automatizados. |
+| smtp4dev | Servidor de Email de Pruebas | Atrapa los correos salientes de las apps para verlos en un panel local sin enviar emails reales. |
+| pgAdmin | Administración de Bases de Datos | Interfaz web para administrar y monitorizar bases de datos PostgreSQL. |
 
 ## 📂 Estructura del Repositorio
 
@@ -17,23 +29,25 @@ Este repositorio contiene la configuración necesaria para levantar el ecosistem
 * `n8n/`:
     * `workflows/`: Carpeta donde exportar tus flujos exportados manualmente (`.json`) desde n8n.
 * `docker-compose.yml`: Archivo principal para orquestar todos los servicios.
-* `Guía de Instalación_SIE.pdf`: Documento complementario con información general y pasos para el proceso de instalación.
 
 ## 🛠️ Requisitos y Herramientas Externas
 
-Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas en tu equipo:
+Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "externas" (que no se encuentran en el repositorio que hemos creado):
 
 1.  **Docker Desktop:** [Descargar](https://www.docker.com/products/docker-desktop/). **Imprescindible.** Es el motor que permite ejecutar todos los servicios (Odoo, SuiteCRM, etc.) contenidos en este repositorio.
-2.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions). Necesario para diseñar y modelar tus procesos de negocio, que posteriormente se ejecutarán en el motor (Bonita Runtime) incluido en el `docker-compose.yml`.
+2.  **Acceso a una cuenta de GitHub:** [Enlace](https://github.com). Necesaria para crear y alojar tu propio repositorio a partir del repositorio "plantilla" que proporcionamos.
 3.  **Git:** [Descargar](https://git-scm.com/downloads). **Recomendado.** Permite mantener tu repositorio actualizado y gestionar versiones. Si no deseas usarlo, puedes descargar el repositorio como un archivo ZIP.
-4.  **Cuenta de GitHub:** Necesaria para crear y alojar tu propio repositorio a partir de la plantilla que proporcionamos.
+4.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions). Necesario para diseñar y modelar tus procesos de negocio, que posteriormente se ejecutarán en el motor (Bonita Runtime) incluido en el `docker-compose.yml`. 
+    * **IMPORTANTE**: Las versiones de Bonita Studio y de Bonita Runtime deben ser la misma para que los procesos se puedan desplegar correctamente. 
+    * Requiere **Java 17** o superior. Puedes descargarlo desde la web de [Adoptium](https://adoptium.net), una opción que usan muchas empresas por tener una licencia más permisiva, o desde [Oracle](https://www.oracle.com/es/java/technologies/downloads), que tiene más restricciones pero que también podemos usar sin coste.
+
 
 ## 🚀 Inicio Rápido para Alumnos
 
 1.  **Crear tu propio repositorio:** Inicia sesión en GitHub y pulsa el botón verde **"Use this template"** arriba a la derecha en el repositorio del curso.
 2.  **Nombre del repositorio:** Es OBLIGATORIO que siga el formato: `sie-UVUS` (siendo `UVUS` tu propio UVUS).
-3.  **Privacidad:** Privado (si fuera necesario el profesor te pedirá que lo añadas como colaborador).
-4.  **Clonar o Descargar:** Usa `git clone <tu-nueva-url>` o descarga el ZIP y descomprímelo.
+3.  **Privacidad:** Privado (si fuera necesario el profesor podrá pedirte que lo añadas como colaborador).
+4.  **Clonar o Descargar:** Clona el repositorio, por ejemplo usando `git clone <tu-nueva-url>` o Visual Studio Code, o descarga el ZIP (pulsando el botón `Code` y luego `Download ZIP`) y descomprímelo.
 5.  **Arrancar:** Entra en la carpeta desde una terminal y ejecuta: `docker compose up -d --build`.
 6.  **Verificar:** Una vez que Docker Desktop indique que los contenedores están en verde, comprueba que puedes acceder a:
     * **Odoo:** [http://localhost:8069](http://localhost:8069)
@@ -45,9 +59,9 @@ Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas en
 
 > **Nota sobre `--build`:** El parámetro `--build` solo es necesario la primera vez o si se modifica el `Dockerfile`. No te preocupes por tus datos; gracias a los volúmenes de Docker, no perderás configuraciones ni archivos aunque detengas los contenedores o reconstruyas la imagen.
 
-## ⚙️ Configuración de Instalación y Red
+## ⚙️ Configuración de la instalación
 
-### A. Instalación de SuiteCRM (Asistente Web)
+### A. SuiteCRM
 A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio. Para ello debemos acceder a la aplicación y seguir los pasos del asistente de instalación, que nos pedirá algunos datos que facilitamos a continuación.
 
 Acceso: `http://localhost:8080/public`
@@ -110,7 +124,7 @@ Para añadir los servidores, haz clic derecho en **Servers** > **Register** > **
 * **Username:** `bonita`
 * **Password:** `bpm`
 
-## Alternativas (Instalación Local)
+## 🖥️ Alternativas (Instalación Local)
 Si por limitaciones de hardware o problemas de otra índole tu equipo no permite ejecutar Docker, hay otras opciones para instalar y ejecutar estas mismas herramientas por separado:
 
 * Odoo: Visita la web oficial y descarga el instalador nativo o usa la versión cloud con restricciones en [https://www.odoo.com/es/page/download](https://www.odoo.com/es/page/download).
@@ -120,7 +134,14 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * smtp4dev: En el repositorio oficial en GitHub podemos encontrar ficheros de instalación para diferentes sistemas operativos [https://github.com/rnwood/smtp4dev/releases](https://github.com/rnwood/smtp4dev/releases).
 * pgAdmin: Podemos descargarla desde [https://www.pgadmin.org](https://www.pgadmin.org)
 
-## FAQ y Resolución de Problemas
+## ❓ FAQ y Resolución de Problemas
+* ¿Debo aceptar la licencia que me aparece al instalar Docker Desktop? Sí, durante el proceso de instalación aparecerá un mensaje sobre los términos de servicio (Docker Subscription Service Agreement) y debéis aceptarlo para poder continuar. Docker Desktop es gratuito para uso educativo y no es necesario realizar ningún pago ni introducir datos bancarios.
+* ¿Qué versión de Docker Desktop debo descargar?
+    * Windows: La mayoría de los ordenadores utilizan la opción AMD64 (procesadores Intel o AMD estándar). Solo elige ARM64 si tienes un dispositivo con procesador basado en arquitectura ARM (como nuevos modelos con chips Snapdragon o series SQ). 
+        * Durante la instalación, asegúrate de activar WSL 2. Si la instalación de WSL falla, abre PowerShell como administrador, ejecuta wsl --install y reinicia el sistema.
+    * macOS: Apple Silicon (ARM64) para modelos con chips M1, M2, M3 o posteriores. Intel Chip (AMD64) para modelos de Mac anteriores a 2020.
+    * Linux: Sigue las instrucciones de la web oficial según tu distribución.
+* ¿Qué hago si me da un error tipo "port is already allocated"? Significa que otra aplicación de tu equipo ya está usando ese puerto. Solución: Abre `docker-compose.yml`, busca el servicio afectado y cambia el primer número del puerto (ej. de 8080:80 a 8082:80). Guarda y ejecuta de nuevo `docker compose up -d --build`.
 * Error "Forbidden" en SuiteCRM: SuiteCRM 8 requiere acceder a través de la carpeta pública. Asegúrate de usar la URL completa: [http://localhost:8080/public](http://localhost:8080/public).
 * ¿Se borra mi trabajo si cierro Docker Desktop o apago el equipo? No. Los datos persisten en los volúmenes definidos en el `docker-compose.yml`, tanto los internos de Docker como los ligados a las carpetas locales de tu proyecto.
 * ¿Cómo detengo los servicios? Ejecuta `docker compose stop` en la carpeta del proyecto (aunque no es estrictamente necesario).
