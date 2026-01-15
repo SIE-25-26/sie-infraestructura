@@ -12,9 +12,10 @@ Este repositorio contiene la configuración necesaria para levantar el ecosistem
     * `languages/`: Contiene el pack de idioma español (.zip) listo para instalar tras lanzar el servicio. Puedes descargar y añadir aquí otros idiomas si lo deseas (más abajo se describe cómo hacerlo).
     * `upload/`: Carpeta local para persistir archivos subidos al CRM.
     * `Dockerfile`: Instrucciones de construcción de la imagen de PHP personalizada.
-* `bonita/`: Directorio recomendado para guardar tus ficheros de Bonita Studio (`.bos`, `.bar`,...).
+* `bonita/`: 
+    * `exports/`: Directorio recomendado para guardar tus ficheros de Bonita Studio (`.bos`, `.bar`,...).
 * `n8n/`:
-    * `data/`: Carpeta donde se guardarán tus flujos y base de datos de n8n.
+    * `workflows/`: Carpeta donde exportar tus flujos exportados manualmente (`.json`) desde n8n.
 * `docker-compose.yml`: Archivo principal para orquestar todos los servicios.
 * `Guía de Instalación_SIE.pdf`: Documento complementario con información general y pasos para el proceso de instalación.
 

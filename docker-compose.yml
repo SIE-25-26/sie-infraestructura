@@ -71,7 +71,7 @@ services:
     ports:
       - "5678:5678"
     volumes:
-      - ./n8n/data:/home/node/.n8n
+      - n8n/data:/home/node/.n8n
 
   # Email Fake Server: smtp4dev
   smtp4dev:
@@ -80,6 +80,8 @@ services:
     ports:
       - "3000:80"     # Panel Web para ver correos
       - "2525:25"     # Puerto SMTP para herramientas externas (Bonita Studio)
+    volumes:
+      - smtp4dev-data:/smtp4dev
     restart: always
 
 volumes:
@@ -87,3 +89,5 @@ volumes:
   suitecrm-data:
   suitecrm-db-data:
   bonita-data:
+  n8n-data:
+  smtp4dev-data:
