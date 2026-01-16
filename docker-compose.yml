@@ -43,6 +43,11 @@ services:
       - DATABASE_NAME=suitecrm_db
       - DATABASE_USER=suitecrm_user
       - DATABASE_PASSWORD=suitecrm_pass
+    entrypoint: >
+      sh -c "chown -R www-data:www-data /var/www/html/cache /var/www/html/custom /var/www/html/logs /var/www/html/public/legacy/upload 2>/dev/null || true &&
+            chmod -R 775 /var/www/html/cache /var/www/html/custom /var/www/html/logs /var/www/html/public/legacy/upload 2>/dev/null || true &&
+            apache2-foreground"
+
 
   db_suitecrm:
     image: mariadb:10.11

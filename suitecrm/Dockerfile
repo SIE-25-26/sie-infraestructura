@@ -23,7 +23,22 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 
 RUN a2enmod rewrite
 COPY ./SuiteCRM-8.9.1 /var/www/html
-RUN chown -R www-data:www-data /var/www/html
+
+# Ajustar permisos estrictos y crear carpetas necesarias para evitar errores
+RUN mkdir -p /var/www/html/cache \
+    /var/www/html/public/legacy/cache \
+    /var/www/html/public/legacy/custom \
+    /var/www/html/public/legacy/modules \
+    /var/www/html/public/legacy/themes \
+    /var/www/html/public/legacy/data \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/cache \
+    && chmod -R 777 /var/www/html/public/legacy/cache \
+    && chmod -R 777 /var/www/html/public/legacy/custom \
+    && chmod -R 777 /var/www/html/public/legacy/modules \
+    && chmod -R 777 /var/www/html/public/legacy/themes \
+    && chmod -R 777 /var/www/html/public/legacy/data
 
 #### ToDo: Probar a meter el ZIP y no la carpeta ya descomprimida que ocupa el doble 
 ## Copiamos el ZIP al contenedor

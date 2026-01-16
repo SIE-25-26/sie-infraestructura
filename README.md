@@ -62,14 +62,16 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
 ## ⚙️ Configuración de la instalación
 
 ### A. SuiteCRM
-A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio. Para ello debemos acceder a la aplicación y seguir los pasos del asistente de instalación, que nos pedirá algunos datos que facilitamos a continuación.
+A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio. Para ello debemos acceder a la aplicación y seguir los pasos del asistente de instalación, que nos pedirá que rellenemos lo siguiente:
 
-Acceso: `http://localhost:8080/public`
-* **Database Host:** `db_suitecrm`
-* **Database Name:** `suitecrm_db`
-* **Database User:** `suitecrm_user`
-* **Database Password:** `suitecrm_pass`
-* **URL Instance:** `http://localhost:8080/public`
+* **URL OF SUITECRM INSTANCE:** `http://localhost:8080/public`
+* **SuiteCRM Database User:** suitecrm_user
+* **SuiteCRM Database User Password:** suitecrm_pass
+* **Host Name:** db_suitecrm (Es muy importante usar el nombre del servicio de Docker, no "localhost")
+* **Database Name:** suitecrm_db
+* **Database Port:** 3306 (Es el puerto por defecto de MariaDB)
+* **POPULATE DATABASE WITH DEMO DATA?:** Sí (Recomendable para ver ejemplos de cuentas, contactos, etc.).
+* **Ignore System Check Warnings:** Check
 
 ### B. Idioma Español y Otros Idiomas en SuiteCRM
 Para poner SuiteCRM en español, sigue estos pasos:
@@ -154,3 +156,6 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * ¿Puedo eliminar un servicio por completo? (por ejemplo, porque hayamos modificado la configuración y necesitemos construirlo desde cero). Sí, con `docker rm -f [SERVICIO]` (Vuelve a lanzarlo con `docker compose up -d --build`).
 * ¿Puedo ver los logs generados en los servicios? Sí, con `docker compose logs [SERVICIO]`.
 * ¿Por qué tenemos dos servicios de PostgreSQL (para Odoo y para Bonita Runtime)? De esta forma, si tuviéramos que eliminar uno o diera cualquier problema no perderíamos los datos del otro.
+* ¿Cómo accedo a los ficheros que están dentro del contenedor?
+  * Ejecuta por ejemplo `cat` para ver el contenido con `docker exec -it <nombre_contenedor> cat /ruta/al/archivo.txt`
+  * Copia el fichero a tu sistema `Host` con `docker cp <nombre_contenedor>:/ruta/en/contenedor/archivo.txt /ruta/en/host/archivo.txt` 
