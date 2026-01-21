@@ -2,6 +2,15 @@
 
 Este repositorio contiene la configuración necesaria para levantar el ecosistema de la asignatura **Sistemas de Información Empresariales** (SIE). Configuraremos un entorno profesional utilizando GitHub y Docker, lo que nos permitirá realizar las actividades planificadas con diferentes herramientas de gestión empresarial, usando todos la misma infraestructura, minimizando los problemas técnicos y facilitando la limpieza del equipo una vez finalizado el trabajo.
 
+## 📑 Índice
+* [Herramientas](#-herramientas)
+* [Estructura del Repositorio](#-estructura-del-repositorio)
+* [Requisitos y Herramientas Externas](#-requisitos-y-herramientas-externas)
+* [Inicio Rápido](#-inicio-rápido)
+* [Configuración](#-configuración)
+
+## 🧰 Herramientas
+
 Las herramientas con las que vamos a trabajar son:
 
 | Herramienta | Categoría | Función Principal |
@@ -37,20 +46,20 @@ Las herramientas con las que vamos a trabajar son:
 
 Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "externas" (que no se encuentran en el repositorio que hemos creado):
 
-1.  **Docker Desktop:** [Descargar](https://www.docker.com/products/docker-desktop/). **Imprescindible.** 
+1.  **Docker Desktop:** [Descargar](https://www.docker.com/products/docker-desktop/)
     * Es el motor que permite ejecutar todos los servicios (Odoo, SuiteCRM, etc.) contenidos en este repositorio.
     * **IMPORTANTE**: Hay que aceptar la licencia (Docker Subscription Service Agreement) aunque podemos saltarnos los pasos que pidan crear una cuenta o iniciar sesión.
-2.  **Acceso a una cuenta de GitHub:** [Enlace](https://github.com). **Recomendado**
+2.  **Acceso a una cuenta de GitHub [OPCIONAL]:** [Enlace](https://github.com)
     * Necesaria para crear y alojar tu propio repositorio a partir del repositorio "plantilla" que proporcionamos.
-3.  **Git:** [Descargar](https://git-scm.com/downloads). **Recomendado.** 
+3.  **Git [OPCIONAL]:** [Descargar](https://git-scm.com/downloads) 
     * Permite mantener tu repositorio actualizado y gestionar versiones. Si no deseas usarlo, puedes descargar el repositorio como un archivo ZIP.
-4.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions). 
+4.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions) 
     * Necesario para diseñar y modelar tus procesos de negocio, que posteriormente se ejecutarán en el motor (Bonita Runtime) incluido en el `docker-compose.yml`. 
     * **IMPORTANTE**: Las versiones de Bonita Studio y de Bonita Runtime deben ser la misma para que los procesos se puedan desplegar correctamente. 
     * Requiere **Java 17** o superior. Puedes descargarlo desde la web de [Adoptium](https://adoptium.net), una opción que usan muchas empresas por tener una licencia más permisiva, o desde [Oracle](https://www.oracle.com/es/java/technologies/downloads), que tiene más restricciones pero que también podemos usar sin coste.
 
 
-## 🚀 Inicio Rápido para Alumnos
+## 🚀 Inicio Rápido
 
 1.  **Crear tu propio repositorio:** Inicia sesión en GitHub y pulsa el botón verde **"Use this template"** arriba a la derecha en el repositorio del curso.
 2.  **Nombre del repositorio:** Es OBLIGATORIO que siga el formato: `sie-UVUS` (siendo `UVUS` tu propio UVUS).
@@ -71,9 +80,9 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
 >    * El parámetro `--build` solo es necesario la primera vez o si se modifica algún `Dockerfile` usado para crear alguna de las imágenes usadas en el *compose* (no te preocupes por tus datos; gracias a los volúmenes de Docker, no perderás configuraciones ni archivos aunque detengas los contenedores o reconstruyas la imagen).
 
 
-## ⚙️ Configuración de la instalación
+## ⚙️ Configuración
 
-### A. SuiteCRM
+### A. SuiteCRM (CRM)
 
 A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio.
 
@@ -168,12 +177,12 @@ Usaremos esta herramienta para poder acceder directamente a la base de datos Mar
 Si por limitaciones de hardware o problemas de otra índole tu equipo no permite ejecutar Docker, hay otras opciones para instalar y ejecutar estas mismas herramientas por separado:
 
 * Odoo: Visita la web oficial y descarga el instalador nativo o usa la versión cloud con restricciones en [https://www.odoo.com/es/page/download](https://www.odoo.com/es/page/download).
-* SuiteCRM: Descarga los archivos desde la web oficial de SuiteCRM [https://suitecrm.com/download](https://suitecrm.com/download). Requiere un servidor con PHP y MySQL (como XAMPP). 
+* SuiteCRM: Descarga los archivos desde la web oficial de SuiteCRM [https://suitecrm.com/download](https://suitecrm.com/download). Requiere un servidor con PHP y MySQL, recomendamos [XAMPP](https://www.apachefriends.org/es/download.html), y ajustar la configuración de PHP siguiendo las [recomendaciones](https://docs.suitecrm.com/8.x/admin/installation-guide/downloading-installing/). 
 * n8n: Usa la versión community de la herramienta siguiendo las indicaciones de la documentación oficial [https://docs.n8n.io/choose-n8n](https://docs.n8n.io/choose-n8n).
-* Bonita Runtime: Puedes descargarla desde la misma URL desde la que se descarga Bonita Studio, y recuerda que ambas deben ser de la misma versión. Si no pudiese llevarse a cabo la instalación de Bonita Runtime, Bonita Studio incluye un servidor local para pruebas rápidas que te permitirá validar los procesos que se diseñen.
+* Bonita Runtime: Puedes descargarla desde la misma URL desde la que se descarga Bonita Studio ([https://www.bonitasoft.com/es/old-versions](https://www.bonitasoft.com/es/old-versions)), y recuerda que ambas deben ser de la misma versión. Si no pudiese llevarse a cabo la instalación de Bonita Runtime, Bonita Studio incluye un servidor local para pruebas rápidas que te permitirá validar los procesos que se diseñen.
 * smtp4dev: En el repositorio oficial en GitHub podemos encontrar ficheros de instalación para diferentes sistemas operativos [https://github.com/rnwood/smtp4dev/releases](https://github.com/rnwood/smtp4dev/releases).
 * pgAdmin: Podemos descargarla desde [https://www.pgadmin.org](https://www.pgadmin.org)
-
+* phpMyAdmin: Incluida en [XAMPP](https://www.apachefriends.org/es/download.html). También podemos descargarla desde [https://www.phpmyadmin.net/downloads/](https://www.phpmyadmin.net/downloads/).
 
 ## ❓ FAQ y Resolución de Problemas
 * **¿Debo aceptar la licencia que me aparece al instalar Docker Desktop?** 
