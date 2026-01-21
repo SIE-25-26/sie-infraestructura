@@ -1,6 +1,9 @@
 FROM php:8.2-apache-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    unzip \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -12,7 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libldap2-dev \
     libcurl4-openssl-dev \
     libonig-dev \
-    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -23,12 +25,23 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 
 RUN a2enmod rewrite
 
-####COPY ./SuiteCRM-8.9.1 /var/www/html
+# Alternativa1: Copiamos el contenido de la carpeta con los ficheros de SuiteCRM al contenedor
+# Problema: La carpeta tiene muchos ficheros y el proceso es lento
+# COPY ./SuiteCRM-8.9.1 /var/www/html
 
-# Copiamos el ZIP al contenedor, lo descomprimimos y eliminamos el ZIP
-COPY ./SuiteCRM-8.9.1.zip /tmp/SuiteCRM.zip
-RUN unzip /tmp/SuiteCRM.zip -d /var/www/html \
-    && rm /tmp/SuiteCRM.zip
+# Alternativa2: Copiamos el ZIP al contenedor, lo descomprimimos y eliminamos el ZIP
+# Problema: El ZIP es demasiado grande para subirlo al repositorio de GitHub (límite=100MB)
+# COPY ./SuiteCRM-8.9.1.zip /tmp/SuiteCRM.zip
+# RUN unzip /tmp/SuiteCRM.zip -d /var/www/html \
+#     && rm /tmp/SuiteCRM.zip
+
+# Alternativa3: Descargamos el ZIP desde la web oficial, lo descomprimimos y eliminamos el ZIP
+WORKDIR /var/www/html
+RUN curl -L https://github.com/salesagility/SuiteCRM-Core/releases/download/v8.9.1/SuiteCRM-8.9.1.zip -o suitecrm.zip \
+    && unzip suitecrm.zip \
+    && rm suitecrm.zip \
+    # Mover archivos si se descomprimen en una subcarpeta
+    && if [ -d "SuiteCRM-8.9.1" ]; then cp -r SuiteCRM-8.9.1/. .; rm -rf SuiteCRM-8.9.1; fi
 
 # Ajustar permisos estrictos y crear carpetas necesarias para evitar errores
 RUN mkdir -p /var/www/html/cache \
