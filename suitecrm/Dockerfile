@@ -22,7 +22,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     gd zip mysqli pdo_mysql intl xml opcache imap soap ldap curl mbstring
 
 RUN a2enmod rewrite
-COPY ./SuiteCRM-8.9.1 /var/www/html
+
+####COPY ./SuiteCRM-8.9.1 /var/www/html
+
+# Copiamos el ZIP al contenedor, lo descomprimimos y eliminamos el ZIP
+COPY ./SuiteCRM-8.9.1.zip /tmp/SuiteCRM.zip
+RUN unzip /tmp/SuiteCRM.zip -d /var/www/html \
+    && rm /tmp/SuiteCRM.zip
 
 # Ajustar permisos estrictos y crear carpetas necesarias para evitar errores
 RUN mkdir -p /var/www/html/cache \
@@ -39,15 +45,6 @@ RUN mkdir -p /var/www/html/cache \
     && chmod -R 777 /var/www/html/public/legacy/modules \
     && chmod -R 777 /var/www/html/public/legacy/themes \
     && chmod -R 777 /var/www/html/public/legacy/data
-
-#### ToDo: Probar a meter el ZIP y no la carpeta ya descomprimida que ocupa el doble 
-## Copiamos el ZIP al contenedor
-#COPY ./SuiteCRM-8.9.1.zip /tmp/SuiteCRM.zip
-#
-## Descomprimimos y limpiamos
-#RUN unzip /tmp/SuiteCRM.zip -d /var/www/html \
-#    && rm /tmp/SuiteCRM.zip \
-#    && chown -R www-data:www-data /var/www/html
 
 # Configuración personalizada de PHP para SuiteCRM
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/suitecrm.ini \

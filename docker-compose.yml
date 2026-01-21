@@ -119,7 +119,7 @@ services:
       - smtp4dev-data:/smtp4dev
     restart: always
 
-  # Gestión BD: pgAdmin 4
+  # Gestión BD: pgAdmin 4 (para Odoo/PostgreSQL y Bonita/PostgreSQL)
   pgadmin:
     image: dpage/pgadmin4
     container_name: sie_pgadmin
@@ -130,6 +130,18 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=admin
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+  # Gestión BD: phpMyAdmin (para SuiteCRM/MariaDB)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sie_phpmyadmin
+    ports:
+      - "8088:80"
+    environment:
+      - PMA_HOST=db_suitecrm
+      - PMA_PORT=3306
+      - UPLOAD_LIMIT=64M
+    restart: always
 
 volumes:
   odoo-web-data:

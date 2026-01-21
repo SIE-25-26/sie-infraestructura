@@ -12,7 +12,9 @@ Las herramientas con las que vamos a trabajar son:
 | Bonita | BPM (Business Process Management) | Automatización y ejecución de procesos de negocio complejos. |
 | n8n | iPaaS (Integration Platform as a Service) | Conecta diferentes aplicaciones mediante flujos de trabajo automatizados. |
 | smtp4dev | Servidor de Email de Pruebas | Atrapa los correos salientes de las apps para verlos en un panel local sin enviar emails reales. |
-| pgAdmin | Administración de Bases de Datos | Interfaz web para administrar y monitorizar bases de datos PostgreSQL. |
+| pgAdmin | Administración de Bases de Datos PostgreSQL | Interfaz web para administrar y monitorizar bases de datos PostgreSQL. |
+| phpMyAdmin | Administración de Bases de Datos MariaDB/MySQL | Interfaz web para administrar y monitorizar bases de datos MariaDB o MySQL. |
+
 
 ## 📂 Estructura del Repositorio
 
@@ -30,14 +32,20 @@ Las herramientas con las que vamos a trabajar son:
     * `workflows/`: Carpeta donde exportar tus flujos exportados manualmente (`.json`) desde n8n.
 * `docker-compose.yml`: Archivo principal para orquestar todos los servicios.
 
+
 ## 🛠️ Requisitos y Herramientas Externas
 
 Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "externas" (que no se encuentran en el repositorio que hemos creado):
 
-1.  **Docker Desktop:** [Descargar](https://www.docker.com/products/docker-desktop/). **Imprescindible.** Es el motor que permite ejecutar todos los servicios (Odoo, SuiteCRM, etc.) contenidos en este repositorio.
-2.  **Acceso a una cuenta de GitHub:** [Enlace](https://github.com). Necesaria para crear y alojar tu propio repositorio a partir del repositorio "plantilla" que proporcionamos.
-3.  **Git:** [Descargar](https://git-scm.com/downloads). **Recomendado.** Permite mantener tu repositorio actualizado y gestionar versiones. Si no deseas usarlo, puedes descargar el repositorio como un archivo ZIP.
-4.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions). Necesario para diseñar y modelar tus procesos de negocio, que posteriormente se ejecutarán en el motor (Bonita Runtime) incluido en el `docker-compose.yml`. 
+1.  **Docker Desktop:** [Descargar](https://www.docker.com/products/docker-desktop/). **Imprescindible.** 
+    * Es el motor que permite ejecutar todos los servicios (Odoo, SuiteCRM, etc.) contenidos en este repositorio.
+    * **IMPORTANTE**: Hay que aceptar la licencia (Docker Subscription Service Agreement) aunque podemos saltarnos los pasos que pidan crear una cuenta o iniciar sesión.
+2.  **Acceso a una cuenta de GitHub:** [Enlace](https://github.com). **Recomendado**
+    * Necesaria para crear y alojar tu propio repositorio a partir del repositorio "plantilla" que proporcionamos.
+3.  **Git:** [Descargar](https://git-scm.com/downloads). **Recomendado.** 
+    * Permite mantener tu repositorio actualizado y gestionar versiones. Si no deseas usarlo, puedes descargar el repositorio como un archivo ZIP.
+4.  **Bonita Studio 2023.2:** [Descargar](https://www.bonitasoft.com/es/old-versions). 
+    * Necesario para diseñar y modelar tus procesos de negocio, que posteriormente se ejecutarán en el motor (Bonita Runtime) incluido en el `docker-compose.yml`. 
     * **IMPORTANTE**: Las versiones de Bonita Studio y de Bonita Runtime deben ser la misma para que los procesos se puedan desplegar correctamente. 
     * Requiere **Java 17** o superior. Puedes descargarlo desde la web de [Adoptium](https://adoptium.net), una opción que usan muchas empresas por tener una licencia más permisiva, o desde [Oracle](https://www.oracle.com/es/java/technologies/downloads), que tiene más restricciones pero que también podemos usar sin coste.
 
@@ -56,13 +64,22 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
     * **n8n:** [http://localhost:5678](http://localhost:5678)
     * **smtp4dev:** [http://localhost:3000](http://localhost:3000)
     * **pgAdmin:** [http://localhost:5050](http://localhost:5050)
+    * **phpMyAdmin:** [http://localhost:8088](http://localhost:8088)
 
-> **Nota sobre `--build`:** El parámetro `--build` solo es necesario la primera vez o si se modifica el `Dockerfile`. No te preocupes por tus datos; gracias a los volúmenes de Docker, no perderás configuraciones ni archivos aunque detengas los contenedores o reconstruyas la imagen.
+> **Nota sobre los parámetros de `docker compose up -d --build`:**
+>    * El parámetro `-d`activa el "*detached mode*", es decir, ejecuta los contenedores en segundo plano.
+>    * El parámetro `--build` solo es necesario la primera vez o si se modifica algún `Dockerfile` usado para crear alguna de las imágenes usadas en el *compose* (no te preocupes por tus datos; gracias a los volúmenes de Docker, no perderás configuraciones ni archivos aunque detengas los contenedores o reconstruyas la imagen).
+
 
 ## ⚙️ Configuración de la instalación
 
 ### A. SuiteCRM
-A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio. Para ello debemos acceder a la aplicación y seguir los pasos del asistente de instalación, que nos pedirá que rellenemos lo siguiente:
+
+A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio.
+
+Antes de nada, debemos saber que al acceder al instalador en [http://localhost:8080/public](http://localhost:8080/public) se hace una comprobación inicial que no debe dar errores, pero sí es normal que salgan avisos en el apartado **"ROUTE ACCESS CHECK"** debidos a la naturaleza de la red interna que se usa en Docker. Podemos pulsar **"IGNORE WARNINGS AND PROCEED"** sin problema para continuar con la instalación.
+
+A continuación seguiremos los pasos del asistente de instalación, que nos pedirá que rellenemos lo siguiente:
 
 * **URL OF SUITECRM INSTANCE:** `http://localhost:8080/public`
 * **SuiteCRM Database User:** suitecrm_user
@@ -71,17 +88,20 @@ A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una
 * **Database Name:** suitecrm_db
 * **Database Port:** 3306 (Es el puerto por defecto de MariaDB)
 * **POPULATE DATABASE WITH DEMO DATA?:** Sí (Recomendable para ver ejemplos de cuentas, contactos, etc.).
+* **SuiteCRM Application Admin Name:** [escribe el username que quieras para tu usuario administrador, por ejemplo tu *UVUS*]
+* **SuiteCRM Admin User Password:** [escribe la contraseña que quieras para tu usuario administrador]
 * **Ignore System Check Warnings:** Check
 
-### B. Idioma Español y Otros Idiomas en SuiteCRM
-Para poner SuiteCRM en español, sigue estos pasos:
+Para poner SuiteCRM en español una vez completado el asistente, accede con el usuario administrador que has creado y sigue estos pasos:
 1. **Instalación:** Ve a **Admin** > **Module Loader**, sube el archivo `.zip` que está en la carpeta `suitecrm/languages/`, pulsa **Install** y luego **Commit**.
 2. **Verificación:** Ve a **Admin** > **Languages**. Comprueba que el idioma "Spanish" aparece en la columna **Enabled**. Si no es así, muévelo y guarda.
 3. **Selección:** Cierra sesión. En la pantalla de Login, verás un selector para elegir "Español".
 
 > **Descarga de traducciones:** Puedes encontrar los paquetes de idioma listos para descargar en [SuiteCRM Translations (SourceForge)](https://sourceforge.net/projects/suitecrmtranslations/files/). Para las versiones más recientes o para colaborar en la traducción, visita [SuiteCRM Crowdin](https://crowdin.com/project/suitecrmtranslations).
 
-### C. smtp4dev (Servidor de correo electrónico)
+---
+
+### B. smtp4dev (Servidor de correo electrónico)
 Entre las herramientas se encuentra un servidor de correo "fake2 (smtp4dev), que simula el envío de correos electrónicos para hacer pruebas sin necesidad de enviarlos realmente. Será util para configurar las demás herramientas y probar funcionalidades como la creación de nuevos usuarios en SuiteCRM de manera que reciban su contraseña de acceso por email.
 También podemos usarlo para que nuestros procesos de negocio en Bonita Studio y Bonita Runtime incluyan una tarea que envíe un email, pero debemos tener en cuenta que la configuración será distinta en ambas herramientas al estar ejecutándose fuera y dentro de Docker respectivamente. A continuación mostramos los parámetros a usar en cada caso.
 | Configuración | Desde Docker (Odoo/SuiteCRM/n8n/Bonita Runtime) | Desde fuera de Docker (Bonita Studio) |
@@ -91,10 +111,14 @@ También podemos usarlo para que nuestros procesos de negocio en Bonita Studio y
 
 > **Ver Emails:** Accede a [http://localhost:3000](http://localhost:3000) para ver los correos capturados.
 
-### D. Bonita Runtime (BPM)
+---
+
+### C. Bonita Runtime (BPM)
 Tras lanzar el servicio el sistema no tendrá Organización, BDM ni procesos, que deberán ser desplegados por el usuario denominado "superadministrador", que es el único que inicialmente puede iniciar sesión con las credenciales `install / install`.
 
-### E. Odoo (ERP)
+---
+
+### D. Odoo (ERP)
 Al acceder a Odoo por primera vez podremos crear una primera base de datos para gestionar nuestra organización (podemos crear varias, por ejemplo para realizar pruebas). En este punto tendremos que usar la **"Master password"** definida en el fichero `odoo/config/odoo.conf` que por defecto es `admin_password`. También será necesaria para crear nuevas bases de datos o realizar operaciones sobre las bases de datos que ya tengamos creadas. 
 
 #### Módulos Personalizados en Odoo (Addons)
@@ -104,10 +128,14 @@ Si has añadido una carpeta de módulo en `odoo/addons/`, sigue estos pasos para
 3. **Instalar:** Busca tu módulo en el buscador (quita el filtro "Aplicaciones" si no aparece) y pulsa **Instalar**.
 > **Nota:** Si has hecho cambios en el código Python del módulo, debes reiniciar el contenedor con `docker compose restart odoo`. Si solo has cambiado XML/CSS, basta con **Actualizar** el módulo desde la interfaz.
 
-### F. n8n (iPaaS)
+---
+
+### E. n8n (iPaaS)
 Esta herramienta nos permite crear flujos de trabajo que integren diferentes servicios de los que tengamos lanzados en esta infraestructura empresarial. Requerirá crear una cuenta local la primera vez que accedamos.
 
-### G. pgAdmin (Gestión de Bases de Datos)
+---
+
+### F. pgAdmin (Gestión de Bases de Datos PostgreSQL)
 Usaremos esta herramienta para poder acceder directamente a las bases de datos PostgreSQL que usan Odoo y Bonita Runtime usando los siguientes datos:
 * **Email:** `admin@sie.com`
 * **Password:** `admin`
@@ -126,6 +154,16 @@ Para añadir los servidores, haz clic derecho en **Servers** > **Register** > **
 * **Username:** `bonita`
 * **Password:** `bpm`
 
+---
+
+### G. phpMyAdmin (Gestión de Bases de Datos MariaDB/MySQL)
+Usaremos esta herramienta para poder acceder directamente a la base de datos MariaDB que usa SuiteCRM usando los siguientes datos:
+* **Servidor:** (Ya configurado por defecto como `db_suitecrm`)
+* **Usuario:** `suitecrm_user`
+* **Contraseña:** `suitecrm_pass` 
+>   *(También puedes usar usuario `root` y contraseña `root_pass`)*
+
+
 ## 🖥️ Alternativas (Instalación Local)
 Si por limitaciones de hardware o problemas de otra índole tu equipo no permite ejecutar Docker, hay otras opciones para instalar y ejecutar estas mismas herramientas por separado:
 
@@ -136,26 +174,40 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * smtp4dev: En el repositorio oficial en GitHub podemos encontrar ficheros de instalación para diferentes sistemas operativos [https://github.com/rnwood/smtp4dev/releases](https://github.com/rnwood/smtp4dev/releases).
 * pgAdmin: Podemos descargarla desde [https://www.pgadmin.org](https://www.pgadmin.org)
 
+
 ## ❓ FAQ y Resolución de Problemas
-* ¿Debo aceptar la licencia que me aparece al instalar Docker Desktop? Sí, durante el proceso de instalación aparecerá un mensaje sobre los términos de servicio (Docker Subscription Service Agreement) y debéis aceptarlo para poder continuar. Docker Desktop es gratuito para uso educativo y no es necesario realizar ningún pago ni introducir datos bancarios.
-* ¿Qué versión de Docker Desktop debo descargar?
+* **¿Debo aceptar la licencia que me aparece al instalar Docker Desktop?** 
+    * Sí, durante el proceso de instalación aparecerá un mensaje sobre los términos de servicio (Docker Subscription Service Agreement) y debéis aceptarlo para poder continuar aunque no es necesario crear una cuenta o iniciar sesión para usar la herramienta. Docker Desktop es gratuito para uso educativo y no es necesario realizar ningún pago ni introducir datos bancarios.
+* **¿Qué versión de Docker Desktop debo descargar?**
     * Windows: La mayoría de los ordenadores utilizan la opción AMD64 (procesadores Intel o AMD estándar). Solo elige ARM64 si tienes un dispositivo con procesador basado en arquitectura ARM (como nuevos modelos con chips Snapdragon o series SQ). 
-        * Durante la instalación, asegúrate de activar WSL 2. Si la instalación de WSL falla, abre PowerShell como administrador, ejecuta wsl --install y reinicia el sistema.
+        * Durante la instalación, asegúrate de activar WSL 2. Si la instalación de WSL falla, abre PowerShell como administrador, ejecuta `wsl --install` y reinicia el sistema.
     * macOS: Apple Silicon (ARM64) para modelos con chips M1, M2, M3 o posteriores. Intel Chip (AMD64) para modelos de Mac anteriores a 2020.
     * Linux: Sigue las instrucciones de la web oficial según tu distribución.
-* ¿Qué hago si me da un error tipo "port is already allocated"? Significa que otra aplicación de tu equipo ya está usando ese puerto. Solución: Abre `docker-compose.yml`, busca el servicio afectado y cambia el primer número del puerto (ej. de 8080:80 a 8082:80). Guarda y ejecuta de nuevo `docker compose up -d --build`.
-* Error "Forbidden" en SuiteCRM: SuiteCRM 8 requiere acceder a través de la carpeta pública. Asegúrate de usar la URL completa: [http://localhost:8080/public](http://localhost:8080/public).
-* ¿Se borra mi trabajo si cierro Docker Desktop o apago el equipo? No. Los datos persisten en los volúmenes definidos en el `docker-compose.yml`, tanto los internos de Docker como los ligados a las carpetas locales de tu proyecto.
-* ¿Cómo detengo los servicios? Ejecuta `docker compose stop` en la carpeta del proyecto (aunque no es estrictamente necesario).
-* ¿Problemas con la virtualización? Si Docker no arranca, verifica en la BIOS que la "Virtualización" (VT-x o AMD-V) esté habilitada.
-* ¿Cómo empiezo de cero con un servicio instalado eliminando todos los datos creados hasta la fecha?
+* **¿Qué hago si me da un error tipo "port is already allocated"?** 
+    * Significa que otra aplicación de tu equipo ya está usando ese puerto. Solución: Abre `docker-compose.yml`, busca el servicio afectado y cambia el primer número del puerto (ej. de 8080:80 a 8082:80). Guarda y ejecuta de nuevo `docker compose up -d --build`.
+* **¿Qué hago si obtengo un error "Forbidden" al intentar acceder a SuiteCRM?** 
+    * SuiteCRM 8 requiere acceder a través de la carpeta pública. Asegúrate de usar la URL completa: [http://localhost:8080/public](http://localhost:8080/public).
+* **¿Se borra mi trabajo si cierro Docker Desktop o apago el equipo?** 
+    * No. Los datos persisten en los volúmenes definidos en el `docker-compose.yml`, tanto los internos de Docker como los ligados a las carpetas locales de tu proyecto.
+* **¿Cómo detengo los servicios?** 
+    * Ejecuta `docker compose stop` en la carpeta del proyecto (aunque no es estrictamente necesario para apagar tu equipo). 
+    * También puedes ejecutar `docker compose down` pero ten cuidado y no lo uses con el parámetro `-v` (o `--volumes`) o se borrarán todos los datos guardados hasta la fecha.
+* **¿Problemas con la virtualización?** 
+    * Si Docker no arranca, verifica en la BIOS que la "Virtualización" (VT-x o AMD-V) esté habilitada.
+    * Docker Desktop recomienda un mínimo de 4GB de RAM.
+* **¿Cómo empiezo de cero con un servicio instalado eliminando todos los datos creados hasta la fecha?**
     1. Páralo todo con `docker compose down` desde la carpeta del proyecto.
     2. Saca el listado de volúmenes con `docker volume ls`.
-    3. Elimina los relacionados con ese servicio con `docker volume rm [VOLUMEN_A_ELIMINAR]`.
+    3. Elimina los relacionados con ese servicio con `docker volume rm <VOLUMEN_A_ELIMINAR>`.
     4. Vuelve a lanzar los servicios con `docker compose up -d`.
-* ¿Puedo eliminar un servicio por completo? (por ejemplo, porque hayamos modificado la configuración y necesitemos construirlo desde cero). Sí, con `docker rm -f [SERVICIO]` (Vuelve a lanzarlo con `docker compose up -d --build`).
-* ¿Puedo ver los logs generados en los servicios? Sí, con `docker compose logs [SERVICIO]`.
-* ¿Por qué tenemos dos servicios de PostgreSQL (para Odoo y para Bonita Runtime)? De esta forma, si tuviéramos que eliminar uno o diera cualquier problema no perderíamos los datos del otro.
-* ¿Cómo accedo a los ficheros que están dentro del contenedor?
-  * Ejecuta por ejemplo `cat` para ver el contenido con `docker exec -it <nombre_contenedor> cat /ruta/al/archivo.txt`
-  * Copia el fichero a tu sistema `Host` con `docker cp <nombre_contenedor>:/ruta/en/contenedor/archivo.txt /ruta/en/host/archivo.txt` 
+* **¿Puedo eliminar un servicio por completo?**
+    * Sí, por ejemplo, porque hayamos modificado la configuración y necesitemos construirlo desde cero. 
+    * Puedes hacerlo con `docker rm -f [SERVICIO]` (Vuelve a lanzarlo con `docker compose up -d --build`).
+    * Si lo que quieres es empezar de cero con todo lo que hay en el *compose*: `docker compose down -v --rmi all --remove-orphans`
+* **¿Puedo ver los logs generados en los servicios?** 
+    * Sí, con `docker compose logs <SERVICIO>`.
+* **¿Por qué tenemos dos servicios de PostgreSQL?** 
+    * En esta infraestructura tenemos uno para Odoo y otro para Bonita Runtime. De esta forma, si tuviéramos que eliminar uno o diera cualquier problema no perderíamos los datos del otro.
+* **¿Cómo accedo a un fichero que está dentro de un contenedor?**
+  * Ejecuta por ejemplo `cat` para ver el contenido con `docker exec -it <CONTENEDOR> cat /ruta/al/archivo.txt`
+  * Copia el fichero a tu sistema `Host` con `docker cp <CONTENEDOR>:/ruta/en/contenedor/archivo.txt /ruta/en/host/archivo.txt` 
