@@ -3,14 +3,23 @@
 Este repositorio contiene la configuración necesaria para levantar el ecosistema de la asignatura **Sistemas de Información Empresariales** (SIE). Configuraremos un entorno profesional utilizando GitHub y Docker, lo que nos permitirá realizar las actividades planificadas con diferentes herramientas de gestión empresarial, usando todos la misma infraestructura, minimizando los problemas técnicos y facilitando la limpieza del equipo una vez finalizado el trabajo.
 
 ## 📑 Índice
-* [Herramientas](#-herramientas)
-* [Estructura del Repositorio](#-estructura-del-repositorio)
-* [Requisitos y Herramientas Externas](#-requisitos-y-herramientas-externas)
-* [Inicio Rápido](#-inicio-rápido)
-* [Configuración](#-configuración)
+* [Herramientas](#herramientas)
+* [Estructura del Repositorio](#estructura)
+* [Requisitos y Herramientas Externas](#requisitos)
+* [Inicio Rápido](#inicio)
+* [Configuración](#configuración)
+    * [SuiteCRM](#config-suitecrm)
+    * [smtp4dev](#config-smtp4dev)
+    * [Bonita Runtime](#config-bonita)
+    * [Odoo](#config-odoo)
+    * [n8n](#config-n8n)
+    * [pgAdmin](#config-pgadmin)
+    * [phpMyAdmin](#config-phpmyadmin)
+* [Alternativas con instalación Local)](#alternativas)
+* [FAQ y Resolución de Problemas](#faq)
 
+<span id="herramientas"></span>
 ## 🧰 Herramientas
-
 Las herramientas con las que vamos a trabajar son:
 
 | Herramienta | Categoría | Función Principal |
@@ -25,6 +34,7 @@ Las herramientas con las que vamos a trabajar son:
 | phpMyAdmin | Administración de Bases de Datos MariaDB/MySQL | Interfaz web para administrar y monitorizar bases de datos MariaDB o MySQL. |
 
 
+<span id="estructura"></span>
 ## 📂 Estructura del Repositorio
 
 * `odoo/`:
@@ -42,6 +52,7 @@ Las herramientas con las que vamos a trabajar son:
 * `docker-compose.yml`: Archivo principal para orquestar todos los servicios.
 
 
+<span id="requisitos"></span>
 ## 🛠️ Requisitos y Herramientas Externas
 
 Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "externas" (que no se encuentran en el repositorio que hemos creado):
@@ -59,6 +70,7 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
     * Requiere **Java 17** o superior. Puedes descargarlo desde la web de [Adoptium](https://adoptium.net), una opción que usan muchas empresas por tener una licencia más permisiva, o desde [Oracle](https://www.oracle.com/es/java/technologies/downloads), que tiene más restricciones pero que también podemos usar sin coste.
 
 
+<span id="inicio"></span>
 ## 🚀 Inicio Rápido
 
 1.  **Crear tu propio repositorio:** Inicia sesión en GitHub y pulsa el botón verde **"Use this template"** arriba a la derecha en el repositorio del curso.
@@ -80,8 +92,12 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
 >    * El parámetro `--build` solo es necesario la primera vez o si se modifica algún `Dockerfile` usado para crear alguna de las imágenes usadas en el *compose* (no te preocupes por tus datos; gracias a los volúmenes de Docker, no perderás configuraciones ni archivos aunque detengas los contenedores o reconstruyas la imagen).
 
 
+<span id="configuracion"></span>
 ## ⚙️ Configuración
 
+En esta sección vamos a comentar aspectos básicos para poder empezar a trabajar con las herramientas incluidas en este repositorio.
+
+<span id="config-suitecrm"></span>
 ### A. SuiteCRM (CRM)
 
 A diferencia del resto de herramientas, SuiteCRM debe terminar de instalarse una vez lanzado el servicio.
@@ -110,6 +126,7 @@ Para poner SuiteCRM en español una vez completado el asistente, accede con el u
 
 ---
 
+<span id="config-smtp4dev"></span>
 ### B. smtp4dev (Servidor de correo electrónico)
 Entre las herramientas se encuentra un servidor de correo "fake2 (smtp4dev), que simula el envío de correos electrónicos para hacer pruebas sin necesidad de enviarlos realmente. Será util para configurar las demás herramientas y probar funcionalidades como la creación de nuevos usuarios en SuiteCRM de manera que reciban su contraseña de acceso por email.
 También podemos usarlo para que nuestros procesos de negocio en Bonita Studio y Bonita Runtime incluyan una tarea que envíe un email, pero debemos tener en cuenta que la configuración será distinta en ambas herramientas al estar ejecutándose fuera y dentro de Docker respectivamente. A continuación mostramos los parámetros a usar en cada caso.
@@ -122,11 +139,13 @@ También podemos usarlo para que nuestros procesos de negocio en Bonita Studio y
 
 ---
 
+<span id="config-bonita"></span>
 ### C. Bonita Runtime (BPM)
 Tras lanzar el servicio el sistema no tendrá Organización, BDM ni procesos, que deberán ser desplegados por el usuario denominado "superadministrador", que es el único que inicialmente puede iniciar sesión con las credenciales `install / install`.
 
 ---
 
+<span id="config-odoo"></span>
 ### D. Odoo (ERP)
 Al acceder a Odoo por primera vez podremos crear una primera base de datos para gestionar nuestra organización (podemos crear varias, por ejemplo para realizar pruebas). En este punto tendremos que usar la **"Master password"** definida en el fichero `odoo/config/odoo.conf` que por defecto es `admin_password`. También será necesaria para crear nuevas bases de datos o realizar operaciones sobre las bases de datos que ya tengamos creadas. 
 
@@ -139,11 +158,13 @@ Si has añadido una carpeta de módulo en `odoo/addons/`, sigue estos pasos para
 
 ---
 
+<span id="config-n8n"></span>
 ### E. n8n (iPaaS)
 Esta herramienta nos permite crear flujos de trabajo que integren diferentes servicios de los que tengamos lanzados en esta infraestructura empresarial. Requerirá crear una cuenta local la primera vez que accedamos.
 
 ---
 
+<span id="config-pgadmin"></span>
 ### F. pgAdmin (Gestión de Bases de Datos PostgreSQL)
 Usaremos esta herramienta para poder acceder directamente a las bases de datos PostgreSQL que usan Odoo y Bonita Runtime usando los siguientes datos:
 * **Email:** `admin@sie.com`
@@ -165,6 +186,7 @@ Para añadir los servidores, haz clic derecho en **Servers** > **Register** > **
 
 ---
 
+<span id="config-phpmyadmin"></span>
 ### G. phpMyAdmin (Gestión de Bases de Datos MariaDB/MySQL)
 Usaremos esta herramienta para poder acceder directamente a la base de datos MariaDB que usa SuiteCRM usando los siguientes datos:
 * **Servidor:** (Ya configurado por defecto como `db_suitecrm`)
@@ -173,6 +195,7 @@ Usaremos esta herramienta para poder acceder directamente a la base de datos Mar
 >   *(También puedes usar usuario `root` y contraseña `root_pass`)*
 
 
+<span id="alternativas"></span>
 ## 🖥️ Alternativas (Instalación Local)
 Si por limitaciones de hardware o problemas de otra índole tu equipo no permite ejecutar Docker, hay otras opciones para instalar y ejecutar estas mismas herramientas por separado:
 
@@ -184,6 +207,8 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * pgAdmin: Podemos descargarla desde [https://www.pgadmin.org](https://www.pgadmin.org)
 * phpMyAdmin: Incluida en [XAMPP](https://www.apachefriends.org/es/download.html). También podemos descargarla desde [https://www.phpmyadmin.net/downloads/](https://www.phpmyadmin.net/downloads/).
 
+
+<span id="faq"></span>
 ## ❓ FAQ y Resolución de Problemas
 * **¿Debo aceptar la licencia que me aparece al instalar Docker Desktop?** 
     * Sí, durante el proceso de instalación aparecerá un mensaje sobre los términos de servicio (Docker Subscription Service Agreement) y debéis aceptarlo para poder continuar aunque no es necesario crear una cuenta o iniciar sesión para usar la herramienta. Docker Desktop es gratuito para uso educativo y no es necesario realizar ningún pago ni introducir datos bancarios.
