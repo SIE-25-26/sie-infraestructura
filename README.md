@@ -243,5 +243,9 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * **¿Por qué tenemos dos servicios de PostgreSQL?** 
     * En esta infraestructura tenemos uno para Odoo y otro para Bonita Runtime. De esta forma, si tuviéramos que eliminar uno o diera cualquier problema no perderíamos los datos del otro.
 * **¿Cómo accedo a un fichero que está dentro de un contenedor?**
-  * Ejecuta por ejemplo `cat` para ver el contenido con `docker exec -it <CONTENEDOR> cat /ruta/al/archivo.txt`
-  * Copia el fichero a tu sistema `Host` con `docker cp <CONTENEDOR>:/ruta/en/contenedor/archivo.txt /ruta/en/host/archivo.txt` 
+    * Ejecuta por ejemplo `cat` para ver el contenido con `docker exec -it <CONTENEDOR> cat /ruta/al/archivo.txt`
+    * Copia el fichero a tu sistema `Host` con `docker cp <CONTENEDOR>:/ruta/en/contenedor/archivo.txt /ruta/en/host/archivo.txt` 
+* **¿Puedo abrir un terminal dentro de un contenedor?**
+    * Sí, por ejemplo para instalar modulos adicionales en el intérprete de Python de Odoo (por ejemplo, porque al activar un modulo nos haya salido un error por falta una dependencia). 
+    * Abre un terminal ejecutando `docker exec -it sie_odoo bash`, instala el módulo con `pip` y comprueba si funciona. Por ejemplo, para instalar Pandas ejecutaríamos `pip3 install pandas` y luego `python3 -c "import pandas; print(pandas.__version__)"` para ver si se muestra la versión de Pandas instalada.
+    * Para volver al terminal del *Host* ejecuta `exit`, y reiniciamos el servicio si es necesario. Por ejemplo, en el caso de instalar un módulo Python para Odoo será necesario reiniciar el servicio con `docker restart sie_odoo`.
