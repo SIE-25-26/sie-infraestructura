@@ -81,7 +81,7 @@ Antes de comenzar, necesitaremos tener instaladas las siguientes herramientas "e
 6.  **Verificar:** Una vez que Docker Desktop indique que los contenedores están en verde, comprueba que puedes acceder a:
     * **Odoo:** [http://localhost:8069](http://localhost:8069)
     * **SuiteCRM:** [http://localhost:8080/public](http://localhost:8080/public)
-    * **Bonita Runtime:** [http://localhost:8081/bonita](http://localhost:8081/bonita)
+    * **Bonita Runtime:** [http://localhost:8081](http://localhost:8081)
     * **n8n:** [http://localhost:5678](http://localhost:5678)
     * **smtp4dev:** [http://localhost:3000](http://localhost:3000)
     * **pgAdmin:** [http://localhost:5050](http://localhost:5050)
