@@ -3,20 +3,23 @@
 Este repositorio contiene la configuración necesaria para levantar el ecosistema de la asignatura **Sistemas de Información Empresariales** (SIE). Configuraremos un entorno profesional utilizando GitHub y Docker, lo que nos permitirá realizar las actividades planificadas con diferentes herramientas de gestión empresarial, usando todos la misma infraestructura, minimizando los problemas técnicos y facilitando la limpieza del equipo una vez finalizado el trabajo.
 
 ## 📑 Índice
-* [Herramientas](#herramientas)
-* [Estructura del Repositorio](#estructura)
-* [Requisitos y Herramientas Externas](#requisitos)
-* [Inicio Rápido](#inicio)
-* [Configuración](#configuración)
-    * [SuiteCRM](#config-suitecrm)
-    * [smtp4dev](#config-smtp4dev)
-    * [Bonita Runtime](#config-bonita)
-    * [Odoo](#config-odoo)
-    * [n8n](#config-n8n)
-    * [pgAdmin](#config-pgadmin)
-    * [phpMyAdmin](#config-phpmyadmin)
-* [Alternativas con instalación Local)](#alternativas)
-* [FAQ y Resolución de Problemas](#faq)
+- [Infraestructura SIE](#infraestructura-sie)
+  - [📑 Índice](#-índice)
+  - [🧰 Herramientas](#-herramientas)
+  - [📂 Estructura del Repositorio](#-estructura-del-repositorio)
+  - [🛠️ Requisitos y Herramientas Externas](#️-requisitos-y-herramientas-externas)
+  - [🚀 Inicio Rápido](#-inicio-rápido)
+  - [⚙️ Configuración](#️-configuración)
+    - [A. SuiteCRM (CRM)](#a-suitecrm-crm)
+    - [B. smtp4dev (Servidor de correo electrónico)](#b-smtp4dev-servidor-de-correo-electrónico)
+    - [C. Bonita Runtime (BPM)](#c-bonita-runtime-bpm)
+    - [D. Odoo (ERP)](#d-odoo-erp)
+      - [Módulos Personalizados en Odoo (Addons)](#módulos-personalizados-en-odoo-addons)
+    - [E. n8n (iPaaS)](#e-n8n-ipaas)
+    - [F. pgAdmin (Gestión de Bases de Datos PostgreSQL)](#f-pgadmin-gestión-de-bases-de-datos-postgresql)
+    - [G. phpMyAdmin (Gestión de Bases de Datos MariaDB/MySQL)](#g-phpmyadmin-gestión-de-bases-de-datos-mariadbmysql)
+  - [🖥️ Alternativas (Instalación Local)](#️-alternativas-instalación-local)
+  - [❓ FAQ y Resolución de Problemas](#-faq-y-resolución-de-problemas)
 
 <span id="herramientas"></span>
 ## 🧰 Herramientas
@@ -41,7 +44,6 @@ Las herramientas con las que vamos a trabajar son:
     * `addons/`: Carpeta para tus módulos personalizados.
     * `config/`: Contiene el fichero `odoo.conf` de configuración.
 * `suitecrm/`:
-    * `SuiteCRM-8.9.1/`: Código fuente de la aplicación.
     * `languages/`: Contiene el pack de idioma español (.zip) listo para instalar tras lanzar el servicio. Puedes descargar y añadir aquí otros idiomas si lo deseas (más abajo se describe cómo hacerlo).
     * `upload/`: Carpeta local para persistir archivos subidos al CRM.
     * `Dockerfile`: Instrucciones de construcción de la imagen de PHP personalizada.
@@ -237,7 +239,7 @@ Si por limitaciones de hardware o problemas de otra índole tu equipo no permite
 * **¿Puedo eliminar un servicio por completo?**
     * Sí, por ejemplo, porque hayamos modificado la configuración y necesitemos construirlo desde cero. 
     * Puedes hacerlo con `docker rm -f [SERVICIO]` (Vuelve a lanzarlo con `docker compose up -d --build`).
-    * Si lo que quieres es empezar de cero con todo lo que hay en el *compose*: `docker compose down -v --rmi all --remove-orphans`
+    * Si lo que quieres es empezar de cero con todo lo que hay en el *compose* ejecuta `docker compose down -v --rmi all --remove-orphans` y termina con `docker system prune -a --volumes`.
 * **¿Puedo ver los logs generados en los servicios?** 
     * Sí, con `docker compose logs <SERVICIO>`.
 * **¿Por qué tenemos dos servicios de PostgreSQL?** 
